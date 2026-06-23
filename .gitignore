@@ -1,0 +1,12 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+payment_gateway.db
+test_payment_gateway.db
+.env
+*.db
+*.pyc
+venv/
+.venv/
+.env.*

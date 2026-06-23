@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101828">
+  <meta name="description" content="A secure payment wallet simulator.">
+  <title>Northstar Pay — Wallet Simulator</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <div class="ambient ambient-one"></div>
+  <div class="ambient ambient-two"></div>
+
+  <main class="shell">
+    <nav class="nav" aria-label="Primary navigation">
+      <a class="brand" href="/" aria-label="Northstar Pay home">
+        <span class="brand-mark">N</span>
+        <span>northstar<span>pay</span></span>
+      </a>
+      <div class="nav-right">
+        <a href="/docs" target="_blank" rel="noreferrer">API docs</a>
+        <button id="logout-button" class="text-button hidden" type="button">Sign out</button>
+      </div>
+    </nav>
+
+    <section id="auth-view" class="auth-layout">
+      <div class="hero-copy">
+        <p class="eyebrow">DEMO PAYMENT INFRASTRUCTURE</p>
+        <h1>Money moves,<br><em>made legible.</em></h1>
+        <p class="hero-text">A thoughtful wallet simulator for testing payment flows. Fund accounts, send money, and keep every movement visible.</p>
+        <div class="trust-row">
+          <span>JWT protected</span><span>Double-entry ledger</span><span>Instant transfers</span>
+        </div>
+      </div>
+
+      <section class="auth-card" aria-labelledby="auth-title">
+        <div class="tab-list" role="tablist">
+          <button class="tab active" id="login-tab" type="button" role="tab" aria-selected="true">Sign in</button>
+          <button class="tab" id="signup-tab" type="button" role="tab" aria-selected="false">Create account</button>
+        </div>
+        <div id="login-panel" role="tabpanel">
+          <h2 id="auth-title">Welcome back</h2>
+          <p class="muted">Sign in to manage your wallet.</p>
+          <form id="login-form" class="form-stack">
+            <label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+            <label>Password<input name="password" type="password" autocomplete="current-password" placeholder="Your password" required></label>
+            <button class="primary-button" type="submit">Sign in <span>→</span></button>
+          </form>
+          <button id="forgot-password-link" class="resend-button" type="button">Forgot your password?</button>
+        </div>
+        <div id="signup-panel" class="hidden" role="tabpanel">
+          <h2>Start with a wallet</h2>
+          <p class="muted">Create your secure simulator account.</p>
+          <form id="signup-form" class="form-stack">
+            <label>Full name<input name="full_name" type="text" autocomplete="name" placeholder="Alex Morgan" minlength="1" maxlength="120" required></label>
+            <label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+            <label>Password<input name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" minlength="8" required></label>
+            <button class="primary-button" type="submit">Create account <span>→</span></button>
+          </form>
+        </div>
+        <div id="verify-panel" class="hidden" role="tabpanel">
+          <p class="eyebrow">ONE LAST STEP</p>
+          <h2>Check your inbox</h2>
+          <p class="muted">Enter the six-digit code we sent to <strong id="verification-email">your email</strong>. It expires in five minutes.</p>
+          <form id="verify-form" class="form-stack">
+            <label>Verification code<input name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="\d{6}" maxlength="6" placeholder="000000" required></label>
+            <button class="primary-button" type="submit">Verify email <span>→</span></button>
+          </form>
+          <button id="resend-button" class="resend-button" type="button">Didn't receive it? Send a new code</button>
+        </div>
+        <div id="forgot-password-panel" class="hidden" role="tabpanel">
+          <p class="eyebrow">ACCOUNT RECOVERY</p>
+          <h2>Reset your password</h2>
+          <p class="muted">Enter your account email and we’ll send a six-digit reset code.</p>
+          <form id="forgot-password-form" class="form-stack">
+            <label>Email<input name="email" type="email" autocomplete="email" placeholder="you@example.com" required></label>
+            <button class="primary-button" type="submit">Send reset code <span>→</span></button>
+          </form>
+          <button class="back-to-login resend-button" type="button">← Back to sign in</button>
+        </div>
+        <div id="reset-password-panel" class="hidden" role="tabpanel">
+          <p class="eyebrow">CODE SENT</p>
+          <h2>Choose a new password</h2>
+          <p class="muted">Enter the six-digit code sent to <strong id="reset-email">your email</strong>. It expires in five minutes.</p>
+          <form id="reset-password-form" class="form-stack">
+            <label>Reset code<input name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" pattern="\d{6}" maxlength="6" placeholder="000000" required></label>
+            <label>New password<input name="new_password" type="password" autocomplete="new-password" minlength="8" placeholder="At least 8 characters" required></label>
+            <button class="primary-button" type="submit">Reset password <span>→</span></button>
+          </form>
+          <button class="back-to-login resend-button" type="button">← Back to sign in</button>
+        </div>
+      </section>
+    </section>
+
+    <section id="dashboard-view" class="dashboard hidden" aria-live="polite">
+      <header class="dashboard-header">
+        <div>
+          <p class="eyebrow">YOUR WALLET</p>
+          <h1>Good to see you, <span id="user-name">there</span>.</h1>
+        </div>
+        <button id="refresh-button" class="secondary-button" type="button">↻ Refresh</button>
+      </header>
+
+      <section class="balance-card">
+        <div>
+          <p>Available balance</p>
+          <strong id="wallet-balance">₹0.00</strong>
+          <small>Wallet ID <span id="wallet-id">—</span></small>
+        </div>
+        <div class="balance-orb" aria-hidden="true">₹</div>
+      </section>
+
+      <section class="action-grid">
+        <article class="action-card">
+          <div class="card-icon mint">+</div>
+          <div><h2>Add money</h2><p>Top up your simulated wallet.</p></div>
+          <form id="deposit-form" class="compact-form">
+            <label class="sr-only" for="deposit-amount">Amount</label>
+            <div class="money-input"><span>₹</span><input id="deposit-amount" name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" placeholder="0.00" required></div>
+            <label class="sr-only" for="deposit-description">Description</label>
+            <input id="deposit-description" name="description" type="text" maxlength="255" placeholder="Description (optional)">
+            <button class="primary-button" type="submit">Add funds</button>
+          </form>
+        </article>
+
+        <article class="action-card">
+          <div class="card-icon coral">↗</div>
+          <div><h2>Send money</h2><p>Transfer to another registered user.</p></div>
+          <form id="transfer-form" class="compact-form">
+            <label class="sr-only" for="recipient-email">Recipient email</label>
+            <input id="recipient-email" name="recipient_email" type="email" placeholder="Recipient email" required>
+            <label class="sr-only" for="transfer-amount">Transfer amount</label>
+            <div class="money-input"><span>₹</span><input id="transfer-amount" name="amount" type="number" min="0.01" max="9999999999.99" step="0.01" placeholder="0.00" required></div>
+            <label class="sr-only" for="transfer-description">Note</label>
+            <input id="transfer-description" name="description" type="text" maxlength="255" placeholder="Note (optional)">
+            <label class="sr-only" for="transfer-password">Confirm password</label>
+            <input id="transfer-password" name="password" type="password" autocomplete="current-password" placeholder="Confirm with your password" required>
+            <button class="dark-button" type="submit">Send securely</button>
+          </form>
+        </article>
+      </section>
+
+      <section class="ledger-section">
+        <div class="section-heading"><div><p class="eyebrow">ACTIVITY</p><h2>Transaction ledger</h2></div><span id="transaction-count" class="count-pill">0 entries</span></div>
+        <div id="transactions" class="transactions"><div class="empty-state">Your transactions will appear here.</div></div>
+      </section>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>
