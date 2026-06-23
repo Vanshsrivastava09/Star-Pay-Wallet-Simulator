@@ -8,7 +8,7 @@ The project simulates how modern fintech applications handle user onboarding, wa
 
 # 📸 Demo
 
-🎥 Demo Video: [Add Google Drive Link Here]
+🎥 Demo Video: [[Add Google Drive Link Here]](https://drive.google.com/file/d/1wOItP8s9pmc1Al2O82CJYt-hLfA7hQsx/view?usp=sharing)
 
 💻 GitHub Repository:
 https://github.com/Vanshsrivastava09/northstar-pay-wallet-simulator
