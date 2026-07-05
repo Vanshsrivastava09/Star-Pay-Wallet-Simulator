@@ -21,6 +21,7 @@ class Settings:
     smtp_username = os.getenv("GMAIL_ADDRESS", "")
     smtp_password = os.getenv("GMAIL_APP_PASSWORD", "")
     smtp_from_email = os.getenv("SMTP_FROM_EMAIL", smtp_username)
+    email_debug = os.getenv("EMAIL_DEBUG", "false").lower() == "true"
     otp_expire_minutes = int(os.getenv("OTP_EXPIRE_MINUTES", "5"))
 
 

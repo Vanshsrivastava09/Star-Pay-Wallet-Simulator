@@ -40,8 +40,17 @@ async function api(path, options = {}, retried = false) {
       throw error;
     }
   }
-  const data = response.status === 204 ? null : await response.json();
-  if (!response.ok) throw new Error(data.detail || "Something went wrong. Please try again.");
+  const text = response.status === 204 ? "" : await response.text();
+  let data = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch (_error) {
+    data = null;
+  }
+  if (!response.ok) {
+    const message = data?.detail || data?.message || text || "Something went wrong. Please try again.";
+    throw new Error(message);
+  }
   return data;
 }
 
@@ -154,8 +163,12 @@ $("#login-form").addEventListener("submit", async (event) => {
 
 $("#signup-form").addEventListener("submit", async (event) => {
   event.preventDefault(); const form = event.currentTarget; setLoading(form, true);
-  try { const values = Object.fromEntries(new FormData(form)); const result = await api("/auth/signup", { method: "POST", body: JSON.stringify(values) }); showVerification(values.email); showToast(result.message); }
-  catch (error) { showToast(error.message, true); } finally { setLoading(form, false); }
+  try {
+    const values = Object.fromEntries(new FormData(form));
+    const result = await api("/auth/signup", { method: "POST", body: JSON.stringify(values) });
+    showVerification(values.email);
+    showToast(result.message + (result.otp ? ` Code: ${result.otp}` : ""));
+  } catch (error) { showToast(error.message, true); } finally { setLoading(form, false); }
 });
 
 $("#verify-form").addEventListener("submit", async (event) => {
@@ -172,8 +185,12 @@ $("#resend-button").addEventListener("click", async (event) => {
 
 $("#forgot-password-form").addEventListener("submit", async (event) => {
   event.preventDefault(); const form = event.currentTarget; setLoading(form, true);
-  try { const email = new FormData(form).get("email"); const result = await api("/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) }); showResetPassword(email); showToast(result.message); }
-  catch (error) { showToast(error.message, true); } finally { setLoading(form, false); }
+  try {
+    const email = new FormData(form).get("email");
+    const result = await api("/auth/forgot-password", { method: "POST", body: JSON.stringify({ email }) });
+    showResetPassword(email);
+    showToast(result.message + (result.otp ? ` Code: ${result.otp}` : ""));
+  } catch (error) { showToast(error.message, true); } finally { setLoading(form, false); }
 });
 
 $("#reset-password-form").addEventListener("submit", async (event) => {

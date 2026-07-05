@@ -34,7 +34,7 @@ def hash_otp(otp: str) -> str:
     return hashlib.sha256(otp.encode("utf-8")).hexdigest()
 
 
-def issue_otp(user: User, db: DbSession) -> None:
+def issue_otp(user: User, db: DbSession) -> str:
     otp = generate_otp()
     user.otp_code = hash_otp(otp)
     user.otp_expiry = datetime.now(timezone.utc) + timedelta(minutes=settings.otp_expire_minutes)
@@ -42,10 +42,13 @@ def issue_otp(user: User, db: DbSession) -> None:
     try:
         send_otp_email(user.email, otp)
     except EmailDeliveryError as exc:
+        if settings.email_debug:
+            return otp
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)) from exc
+    return otp
 
 
-def issue_password_reset_otp(user: User, db: DbSession) -> None:
+def issue_password_reset_otp(user: User, db: DbSession) -> str:
     otp = generate_otp()
     user.password_reset_otp_code = hash_otp(otp)
     user.password_reset_otp_expiry = datetime.now(timezone.utc) + timedelta(minutes=settings.otp_expire_minutes)
@@ -53,7 +56,10 @@ def issue_password_reset_otp(user: User, db: DbSession) -> None:
     try:
         send_password_reset_otp(user.email, otp)
     except EmailDeliveryError as exc:
+        if settings.email_debug:
+            return otp
         raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail=str(exc)) from exc
+    return otp
 
 
 def create_token_pair(user: User, db: DbSession, response: Response) -> TokenResponse:
@@ -130,15 +136,21 @@ def signup(payload: SignupRequest, db: DbSession):
         existing.password_hash = hash_password(payload.password)
         if payload.full_name:
             existing.full_name = payload.full_name
-        issue_otp(existing, db)
-        return OtpDispatchResponse(message="A new verification code has been sent to your email.")
+        otp = issue_otp(existing, db)
+        return OtpDispatchResponse(
+            message="A new verification code has been sent to your email.",
+            otp=otp if settings.email_debug else None,
+        )
 
     display_name = payload.full_name or str(payload.email).split("@", maxsplit=1)[0]
     user = User(email=str(payload.email), full_name=display_name, password_hash=hash_password(payload.password))
     db.add(user)
     db.commit()
-    issue_otp(user, db)
-    return OtpDispatchResponse(message="Verification code sent. Check your email to activate your account.")
+    otp = issue_otp(user, db)
+    return OtpDispatchResponse(
+        message="Verification code sent. Check your email to activate your account.",
+        otp=otp if settings.email_debug else None,
+    )
 
 
 @router.post("/verify-email-otp", response_model=UserResponse)
@@ -178,8 +190,11 @@ def resend_otp(payload: ResendOtpRequest, db: DbSession):
         raise HTTPException(status_code=404, detail="No signup request was found for this email")
     if user.is_verified:
         raise HTTPException(status_code=400, detail="This email address has already been verified")
-    issue_otp(user, db)
-    return OtpDispatchResponse(message="A new verification code has been sent to your email.")
+    otp = issue_otp(user, db)
+    return OtpDispatchResponse(
+        message="A new verification code has been sent to your email.",
+        otp=otp if settings.email_debug else None,
+    )
 
 
 @router.post("/forgot-password", response_model=OtpDispatchResponse)
@@ -191,8 +206,11 @@ def forgot_password(payload: ForgotPasswordRequest, db: DbSession):
     )
     if not user or not user.is_verified:
         return generic_response
-    issue_password_reset_otp(user, db)
-    return generic_response
+    otp = issue_password_reset_otp(user, db)
+    return OtpDispatchResponse(
+        message=generic_response.message,
+        otp=otp if settings.email_debug else None,
+    )
 
 
 @router.post("/reset-password", response_model=OtpDispatchResponse)

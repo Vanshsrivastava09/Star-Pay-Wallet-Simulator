@@ -47,3 +47,4 @@ class ResetPasswordRequest(BaseModel):
 
 class OtpDispatchResponse(BaseModel):
     message: str
+    otp: str | None = None
