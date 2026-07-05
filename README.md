@@ -139,6 +139,17 @@ OTP_EXPIRE_MINUTES=5
 
 Use `EMAIL_DEBUG=true` during initial Render deployment if you do not have SMTP configured. This lets the app return OTP codes directly in the response for testing.
 
+For a production-ready Render deployment, set:
+
+- `DATABASE_URL` to your Postgres connection string
+- `COOKIE_SECURE=true`
+- `EMAIL_DEBUG=false`
+- `SMTP_HOST=smtp.gmail.com`
+- `SMTP_PORT=587`
+- `GMAIL_ADDRESS=your-email@gmail.com`
+- `GMAIL_APP_PASSWORD=your-email-app-password`
+- `SMTP_FROM_EMAIL=your-email@gmail.com`
+
 ---
 
 # 🚀 Local Setup
