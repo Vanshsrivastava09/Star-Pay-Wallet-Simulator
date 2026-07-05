@@ -13,6 +13,22 @@ services:
       - key: COOKIE_SECURE
         value: false
       - key: CORS_ORIGINS
-        value: https://star-pay.onrender.com
+        value: https://star-pay.onrender.com,http://localhost:8000,http://127.0.0.1:8000
       - key: EMAIL_DEBUG
         value: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: 60
+      - key: REFRESH_TOKEN_EXPIRE_DAYS
+        value: 7
+      - key: OTP_EXPIRE_MINUTES
+        value: 5
+      - key: SMTP_HOST
+        value: smtp.gmail.com
+      - key: SMTP_PORT
+        value: 587
+      - key: GMAIL_ADDRESS
+        value: ""
+      - key: GMAIL_APP_PASSWORD
+        value: ""
+      - key: SMTP_FROM_EMAIL
+        value: ""

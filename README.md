@@ -119,19 +119,25 @@ northstar-pay-wallet-simulator/
 
 # ⚙️ Environment Variables
 
-Create a `.env` file.
+Create a `.env` file or set environment variables in Render.
 
 ```env
 SECRET_KEY=your-secret-key
 DATABASE_URL=postgresql+psycopg://your-db-url
 ACCESS_TOKEN_EXPIRE_MINUTES=60
-
+REFRESH_TOKEN_EXPIRE_DAYS=7
+COOKIE_SECURE=false
+CORS_ORIGINS=http://localhost:8000,http://127.0.0.1:8000
+EMAIL_DEBUG=true
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
 GMAIL_ADDRESS=your-email@gmail.com
-GMAIL_APP_PASSWORD=your-app-password
+GMAIL_APP_PASSWORD=your-email-app-password
 SMTP_FROM_EMAIL=your-email@gmail.com
-
 OTP_EXPIRE_MINUTES=5
 ```
+
+Use `EMAIL_DEBUG=true` during initial Render deployment if you do not have SMTP configured. This lets the app return OTP codes directly in the response for testing.
 
 ---
 

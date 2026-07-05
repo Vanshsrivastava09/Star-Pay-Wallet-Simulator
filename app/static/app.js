@@ -15,6 +15,17 @@ function showToast(message, isError = false) {
   showToast.timer = window.setTimeout(() => toast.classList.remove("show"), 3600);
 }
 
+function showDebugHint(message) {
+  const hint = $("#debug-hint");
+  if (!message) {
+    hint.classList.add("hidden");
+    hint.textContent = "";
+    return;
+  }
+  hint.textContent = message;
+  hint.classList.remove("hidden");
+}
+
 async function refreshAccessToken() {
   if (refreshInFlight) return refreshInFlight;
   refreshInFlight = (async () => {
@@ -78,6 +89,7 @@ function toggleAuth(mode) {
 function showVerification(email) {
   state.verificationEmail = email;
   $("#verification-email").textContent = email;
+  showDebugHint("");
   $("#login-panel").classList.add("hidden");
   $("#signup-panel").classList.add("hidden");
   $("#verify-panel").classList.remove("hidden");
@@ -86,6 +98,7 @@ function showVerification(email) {
 }
 
 function showForgotPassword() {
+  showDebugHint("");
   $("#login-panel").classList.add("hidden");
   $("#signup-panel").classList.add("hidden");
   $("#verify-panel").classList.add("hidden");
@@ -98,6 +111,7 @@ function showForgotPassword() {
 function showResetPassword(email) {
   state.resetEmail = email;
   $("#reset-email").textContent = email;
+  showDebugHint("");
   $("#forgot-password-panel").classList.add("hidden");
   $("#reset-password-panel").classList.remove("hidden");
   $("#reset-password-form input").focus();

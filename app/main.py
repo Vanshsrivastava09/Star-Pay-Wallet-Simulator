@@ -3,11 +3,14 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from pathlib import Path
+import logging
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.exceptions import HTTPException as StarletteHTTPException
 
 from app.api import auth, merchants, wallets
 from app.core.config import settings
@@ -21,6 +24,25 @@ app = FastAPI(
     version="1.0.0",
     description="A JWT-protected payment gateway simulator with wallets and transfers.",
 )
+
+logger = logging.getLogger("uvicorn.error")
+
+@app.exception_handler(StarletteHTTPException)
+async def http_exception_handler(request: Request, exc: StarletteHTTPException):
+    return JSONResponse({"detail": exc.detail}, status_code=exc.status_code)
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    return JSONResponse({"detail": "Invalid request", "errors": exc.errors()}, status_code=422)
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    logger.exception("Unhandled application error")
+    return JSONResponse(
+        {"detail": str(exc) if settings.email_debug else "Internal server error"},
+        status_code=500,
+    )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,

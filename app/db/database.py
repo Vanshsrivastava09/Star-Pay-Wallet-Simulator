@@ -4,7 +4,15 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.core.config import settings
 
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
-engine = create_engine(settings.database_url, connect_args=connect_args)
+try:
+    engine = create_engine(settings.database_url, connect_args=connect_args)
+except ModuleNotFoundError as exc:
+    missing = str(exc).split("'", 2)[1] if "'" in str(exc) else "database driver"
+    raise RuntimeError(
+        f"Unable to create the database engine because the driver '{missing}' is missing. "
+        "For PostgreSQL, install the driver with 'pip install psycopg[binary]'. "
+        "For SQLite, use a URL like 'sqlite:///./payment_gateway.db'."
+    ) from exc
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
