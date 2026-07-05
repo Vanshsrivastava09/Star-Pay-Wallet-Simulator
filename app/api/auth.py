@@ -62,6 +62,14 @@ def issue_password_reset_otp(user: User, db: DbSession) -> str:
     return otp
 
 
+def validate_password_length(password: str) -> None:
+    if len(password.encode("utf-8")) > 72:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Password must not exceed 72 characters.",
+        )
+
+
 def create_token_pair(user: User, db: DbSession, response: Response) -> TokenResponse:
     """Issue an access token and rotate a refresh token stored only as a hash."""
     token_row = RefreshToken(id=secrets.token_hex(16), user_id=user.id)
@@ -129,6 +137,7 @@ def get_profile(current_user: CurrentUser):
 
 @router.post("/signup", response_model=OtpDispatchResponse, status_code=status.HTTP_201_CREATED)
 def signup(payload: SignupRequest, db: DbSession):
+    validate_password_length(payload.password)
     existing = db.scalar(select(User).where(User.email == payload.email))
     if existing:
         if existing.is_verified:
