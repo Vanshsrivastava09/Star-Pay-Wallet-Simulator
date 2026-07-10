@@ -1,4 +1,4 @@
-# 🚀 NorthStar Pay - Production Ready Wallet & Payment Gateway Simulator
+# 🚀 Star Pay - Production Ready Wallet & Payment Gateway Simulator
 
 A production-inspired digital wallet and payment gateway simulator built using FastAPI, PostgreSQL, JWT Authentication, and Email OTP verification.
 
@@ -93,7 +93,7 @@ JWT Auth     PostgreSQL
 # 📂 Project Structure
 
 ```bash
-northstar-pay-wallet-simulator/
+Star-pay-wallet-simulator/
 │
 ├── app/
 │   ├── api/
@@ -156,8 +156,8 @@ For a production-ready Render deployment, set:
 ## Clone Repository
 
 ```bash
-git clone https://github.com/Vanshsrivastava09/northstar-pay-wallet-simulator.git
-cd northstar-pay-wallet-simulator
+git clone https://github.com/Vanshsrivastava09/Star-pay-wallet-simulator.git
+cd Star-pay-wallet-simulator
 ```
 
 ## Create Virtual Environment
