@@ -4,6 +4,7 @@ load_dotenv()
 
 from pathlib import Path
 import logging
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.exceptions import RequestValidationError
@@ -16,13 +17,25 @@ from app.routers import auth, merchants, wallets
 from app.core.config import settings
 from app.db.database import Base, engine, ensure_user_verification_columns
 
-Base.metadata.create_all(bind=engine)
-ensure_user_verification_columns()
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: initialize database
+    try:
+        Base.metadata.create_all(bind=engine)
+        ensure_user_verification_columns()
+    except Exception as e:
+        logging.warning(f"Database initialization warning: {e}")
+    yield
+    # Shutdown: cleanup if needed
+    pass
+
 
 app = FastAPI(
     title="Star Pay",
     version="1.0.0",
     description="A JWT-protected payment gateway simulator with wallets and transfers.",
+    lifespan=lifespan,
 )
 
 logger = logging.getLogger("uvicorn.error")
