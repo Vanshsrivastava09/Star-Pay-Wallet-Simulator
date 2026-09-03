@@ -6,8 +6,25 @@ from app.core.config import settings
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
 if settings.database_url.startswith("postgresql"):
     connect_args["sslmode"] = "require"
+
+# Serverless-appropriate pool settings
+engine_args = {
+    "connect_args": connect_args,
+    "pool_pre_ping": True,  # Verify connections before use
+    "pool_recycle": 300,    # Recycle connections after 5 minutes
+}
+
+# Use NullPool for SQLite (no connection pooling needed)
+if settings.database_url.startswith("sqlite"):
+    from sqlalchemy.pool import NullPool
+    engine_args["poolclass"] = NullPool
+else:
+    # Small pool for PostgreSQL in serverless environment
+    engine_args["pool_size"] = 1
+    engine_args["max_overflow"] = 0
+
 try:
-    engine = create_engine(settings.database_url, connect_args=connect_args)
+    engine = create_engine(settings.database_url, **engine_args)
 except ModuleNotFoundError as exc:
     missing = str(exc).split("'", 2)[1] if "'" in str(exc) else "database driver"
     raise RuntimeError(

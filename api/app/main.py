@@ -12,6 +12,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
+from sqlalchemy import text
 
 from app.routers import auth, merchants, wallets
 from app.core.config import settings
@@ -90,3 +91,15 @@ def root():
 @app.get("/health", tags=["Health"])
 def health_check():
     return {"status": "ok"}
+
+
+@app.get("/health/db", tags=["Health"])
+def health_check_db():
+    """Check database connectivity without affecting application state."""
+    try:
+        from app.db.database import engine
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        return {"status": "ok", "database": "connected"}
+    except Exception as e:
+        return {"status": "error", "database": "disconnected", "error": str(e)}, 503
