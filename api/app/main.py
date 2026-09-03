@@ -12,7 +12,7 @@ from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 
-from app.api import auth, merchants, wallets
+from app.routers import auth, merchants, wallets
 from app.core.config import settings
 from app.db.database import Base, engine, ensure_user_verification_columns
 

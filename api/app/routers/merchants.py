@@ -21,7 +21,7 @@ from app.schemas.merchant import (
     MerchantResponse,
     RefundRequest,
 )
-from app.services.ledger import record_double_entry
+from app.repositories.ledger import record_double_entry
 
 router = APIRouter(prefix="/merchants", tags=["Merchants"])
 payments_router = APIRouter(prefix="/merchant-payments", tags=["Merchant payments"])

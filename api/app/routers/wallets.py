@@ -9,7 +9,7 @@ from app.dependencies import CurrentUser, DbSession
 from app.models import LedgerEntry, Transaction, TransactionStatus, TransactionType, User
 from app.schemas.ledger import LedgerEntryResponse
 from app.schemas.wallet import AddMoneyRequest, TransactionResponse, TransferRequest, TransferResponse, WalletResponse
-from app.services.ledger import record_double_entry
+from app.repositories.ledger import record_double_entry
 
 router = APIRouter(prefix="/wallet", tags=["Wallet"])
 
