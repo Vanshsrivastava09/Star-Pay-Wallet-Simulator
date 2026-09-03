@@ -4,6 +4,8 @@ from sqlalchemy.orm import DeclarativeBase, sessionmaker
 from app.core.config import settings
 
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
+if settings.database_url.startswith("postgresql"):
+    connect_args["sslmode"] = "require"
 try:
     engine = create_engine(settings.database_url, connect_args=connect_args)
 except ModuleNotFoundError as exc:
