@@ -5,9 +5,9 @@ from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from sqlalchemy.orm import Session
 
-from app.core.config import settings
-from app.db.database import get_db
-from app.models import RevokedAccessToken, User
+from .core.config import settings
+from .db.database import get_db
+from .models import RevokedAccessToken, User
 
 bearer_scheme = HTTPBearer()
 DbSession = Annotated[Session, Depends(get_db)]

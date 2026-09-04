@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, EmailStr, Field
 
-from app.models import MerchantPaymentStatus
+from ..models import MerchantPaymentStatus
 
 
 class CreateMerchantRequest(BaseModel):

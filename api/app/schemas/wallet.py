@@ -3,7 +3,7 @@ from decimal import Decimal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models import TransactionStatus, TransactionType
+from ..models import TransactionStatus, TransactionType
 
 
 class WalletResponse(BaseModel):

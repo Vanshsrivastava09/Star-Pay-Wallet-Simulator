@@ -3,9 +3,9 @@ from uuid import uuid4
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
 
-from app.core.security import verify_password
-from app.dependencies import CurrentUser, DbSession
-from app.models import (
+from ..core.security import verify_password
+from ..dependencies import CurrentUser, DbSession
+from ..models import (
     Merchant,
     MerchantPayment,
     MerchantPaymentStatus,
@@ -14,14 +14,14 @@ from app.models import (
     TransactionType,
     utc_now,
 )
-from app.schemas.merchant import (
+from ..schemas.merchant import (
     CreateMerchantRequest,
     MerchantPaymentRequest,
     MerchantPaymentResponse,
     MerchantResponse,
     RefundRequest,
 )
-from app.repositories.ledger import record_double_entry
+from ..repositories.ledger import record_double_entry
 
 router = APIRouter(prefix="/merchants", tags=["Merchants"])
 payments_router = APIRouter(prefix="/merchant-payments", tags=["Merchant payments"])

@@ -4,12 +4,12 @@ from uuid import uuid4
 from fastapi import APIRouter, HTTPException, status
 from sqlalchemy import select
 
-from app.core.security import verify_password
-from app.dependencies import CurrentUser, DbSession
-from app.models import LedgerEntry, Transaction, TransactionStatus, TransactionType, User
-from app.schemas.ledger import LedgerEntryResponse
-from app.schemas.wallet import AddMoneyRequest, TransactionResponse, TransferRequest, TransferResponse, WalletResponse
-from app.repositories.ledger import record_double_entry
+from ..core.security import verify_password
+from ..dependencies import CurrentUser, DbSession
+from ..models import LedgerEntry, Transaction, TransactionStatus, TransactionType, User
+from ..schemas.ledger import LedgerEntryResponse
+from ..schemas.wallet import AddMoneyRequest, TransactionResponse, TransferRequest, TransferResponse, WalletResponse
+from ..repositories.ledger import record_double_entry
 
 router = APIRouter(prefix="/wallet", tags=["Wallet"])
 

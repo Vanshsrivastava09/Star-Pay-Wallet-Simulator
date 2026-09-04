@@ -1,10 +1,12 @@
 import sys
 from logging.config import fileConfig
 
-from sqlalchemy import engine_from_config, pool, create_engine
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+
 from alembic import context
 
-sys.path.insert(0, '.')
+sys.path.insert(0, '..')
 
 from app.db.database import Base
 from app.core.config import settings

@@ -7,9 +7,9 @@ import jwt
 from fastapi import APIRouter, Cookie, Header, HTTPException, Response, status
 from sqlalchemy import select
 
-from app.core.config import settings
-from app.core.email import EmailDeliveryError, send_otp_email, send_password_reset_otp
-from app.core.security import (
+from ..core.config import settings
+from ..core.email import EmailDeliveryError, send_otp_email, send_password_reset_otp
+from ..core.security import (
     create_access_token,
     create_refresh_token,
     hash_password,
@@ -17,9 +17,9 @@ from app.core.security import (
     validate_password,
     verify_password,
 )
-from app.dependencies import CurrentUser, DbSession
-from app.models import RefreshToken, RevokedAccessToken, User, Wallet, utc_now
-from app.schemas.auth import (
+from ..dependencies import CurrentUser, DbSession
+from ..models import RefreshToken, RevokedAccessToken, User, Wallet, utc_now
+from ..schemas.auth import (
     LoginRequest,
     ForgotPasswordRequest,
     OtpDispatchResponse,

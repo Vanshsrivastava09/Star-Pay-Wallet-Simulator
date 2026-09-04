@@ -14,9 +14,9 @@ from fastapi.staticfiles import StaticFiles
 from starlette.exceptions import HTTPException as StarletteHTTPException
 from sqlalchemy import text
 
-from app.routers import auth, merchants, wallets
-from app.core.config import settings
-from app.db.database import Base, engine, ensure_user_verification_columns
+from .routers import auth, merchants, wallets
+from .core.config import settings
+from .db.database import Base, engine, ensure_user_verification_columns
 
 
 @asynccontextmanager

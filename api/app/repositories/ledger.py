@@ -2,7 +2,7 @@ from decimal import Decimal
 
 from sqlalchemy.orm import Session
 
-from app.models import LedgerEntry
+from ..models import LedgerEntry
 
 ZERO = Decimal("0.00")
 

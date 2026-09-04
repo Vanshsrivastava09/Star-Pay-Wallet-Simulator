@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine, inspect, text
 from sqlalchemy.orm import DeclarativeBase, sessionmaker
 
-from app.core.config import settings
+from ..core.config import settings
 
 connect_args = {"check_same_thread": False} if settings.database_url.startswith("sqlite") else {}
 if settings.database_url.startswith("postgresql"):

@@ -1,7 +1,7 @@
 import smtplib
 from email.message import EmailMessage
 
-from app.core.config import settings
+from .config import settings
 
 
 class EmailDeliveryError(Exception):
