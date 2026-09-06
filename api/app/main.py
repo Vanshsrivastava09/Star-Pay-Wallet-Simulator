@@ -38,11 +38,6 @@ app = FastAPI(
     description="A JWT-protected payment gateway simulator with wallets and transfers.",
     lifespan=lifespan,
 )
-@app.get("/")
-def root():
-    return {
-        "message": "Star Pay Wallet Simulator API is running successfully"
-    }
 
 logger = logging.getLogger("uvicorn.error")
 
