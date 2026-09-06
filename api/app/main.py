@@ -102,7 +102,7 @@ def health_check():
 def health_check_db():
     """Check database connectivity without affecting application state."""
     try:
-        from app.db.database import engine
+        from .db.database import engine
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
         return {"status": "ok", "database": "connected"}
